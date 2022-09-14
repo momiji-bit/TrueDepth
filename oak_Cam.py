@@ -5,7 +5,7 @@ import math
 import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.use('TKAgg')
+# matplotlib.use('TKAgg')
 
 tan = math.tan
 radians = math.radians
@@ -24,7 +24,7 @@ class OakCam:
                 self.arrays[name] = []
             # Add msg to array
             self.arrays[name].append({'msg': msg, 'seq': msg.getSequenceNum()})
-            print(f'\rname: {name}, seq: {msg.getSequenceNum()}', end='')
+            # print(f'\rname: {name}, seq: {msg.getSequenceNum()}', end='')
 
             synced = {}
             for name, arr in self.arrays.items():
@@ -45,12 +45,12 @@ class OakCam:
                 return synced
             return False
 
-    def __init__(self):
-        print('OAK preparing...')
-        self.lrcheck = True
-        self.extended = False
-        self.subpixel = True
-        self.median = dai.StereoDepthProperties.MedianFilter.KERNEL_3x3
+    def __init__(self, lrcheck=True, extended=False, subpixel=True, median=dai.StereoDepthProperties.MedianFilter.KERNEL_3x3):
+        print('oakCam is preparing...')
+        self.lrcheck = lrcheck
+        self.extended = extended
+        self.subpixel = subpixel
+        self.median = median
 
     def getObjectDepth(self, depth, xyxy):  # 640 360
         slice = depth[xyxy[1]:xyxy[3], xyxy[0]:xyxy[2]]
@@ -62,7 +62,6 @@ class OakCam:
         num = [0]*10001
         for i in slice:
             num[i] += 1
-
         return np.mean(slice), num  # 前+后-
 
     def getObjectX(self, z, x):
@@ -148,7 +147,6 @@ class OakCam:
                             D = msgs["D_Stream"].getFrame()  # 原始深度图
                             RGB = msgs["RGB_Stream"].getCvFrame()
                             IMU = IMU_Stream_Queue.get().packets[0]
-                            # print(f'\rseq: {IMU.rotationVector.sequence}', end='')
                             yield RGB, D, IMU
 
 

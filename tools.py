@@ -49,6 +49,7 @@ deepsort = DeepSort(model_type='osnet_x0_25',
                     use_cuda=True)
 
 
+
 class Colors:
     # Ultralytics color palette https://ultralytics.com/
     def __init__(self):
@@ -130,6 +131,9 @@ class TrackPath():
                 print(f'{p_l:.3f}m {accelerated:.3f}m/s^2 {v_bc:.3f}m/s')
 
 
+color = Colors()
+
+
 def track(RGB):
     out = []
     img_yolo = [letterbox(RGB, imgsz, stride=stride)[0]]
@@ -158,7 +162,7 @@ def track(RGB):
                     id = output[4]  # 追踪编号
                     c = int(output[5])  # 类别
                     name = names[c]
-                    t = [c, id, name, conf, xyxy]
+                    t = [c, id, name, conf, xyxy, color(c, True)]
                     out.append(t)
     else:
         deepsort.increment_ages()
